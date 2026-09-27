@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>@myoec | Разработка</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050507;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f4f4f5;
+      --text-muted: #71717a;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Фоновая сетка */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Шапка */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(5, 5, 7, 0.85);
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+
+    header.built {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 62px;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-size: 17px;
+      text-decoration: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+    }
+
+    .badge-dev {
+      font-size: 10px;
+      padding: 2px 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      color: #a1a1aa;
+    }
+
+    .btn-contact {
+      padding: 8px 16px;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 99px;
+      font-weight: 600;
+      font-size: 12.5px;
+      text-decoration: none;
+      font-family: var(--font-mono);
+      transition: opacity 0.2s;
+    }
+
+    .btn-contact:active {
+      opacity: 0.8;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 70px 0 50px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 5.8vw, 58px);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.15;
+      max-width: 800px;
+      margin-bottom: 18px;
+      min-height: 70px;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.1em;
+      background: #ffffff;
+      vertical-align: middle;
+      margin-left: 4px;
+      animation: blink 0.7s infinite;
+    }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .hero-desc {
+      font-size: clamp(14.5px, 2vw, 17px);
+      color: var(--text-muted);
+      max-width: 580px;
+      margin-bottom: 30px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: all 0.6s var(--ease);
+    }
+
+    .hero-desc.built {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: all 0.6s var(--ease);
+    }
+
+    .hero-actions.built {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-main {
+      padding: 13px 26px;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 99px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .btn-sec {
+      padding: 13px 24px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border-radius: 99px;
+      font-weight: 500;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    /* Секции */
+    section {
+      padding: 36px 0;
+    }
+
+    .sec-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #71717a;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .sec-tag.built { opacity: 1; }
+
+    .sec-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateX(-15px);
+      transition: all 0.6s var(--ease);
+    }
+
+    .sec-title.built {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Карточки */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px;
+      opacity: 0;
+      transform: translateY(24px) scale(0.97);
+      transition: all 0.6s var(--ease);
+    }
+
+    .card.built {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .card-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #71717a;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 13.5px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 14px;
+    }
+
+    .card-list li {
+      font-size: 12.5px;
+      color: #a1a1aa;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-list li::before {
+      content: "›";
+      color: #52525b;
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    /* Терминал кода */
+    .code-window {
+      background: #09090c;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s var(--ease);
+    }
+
+    .code-window.built {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .code-top {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    pre code {
+      display: block;
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.65;
+      color: #e4e4e7;
+      min-height: 100px;
+      white-space: pre-wrap;
+    }
+
+    /* Шаги */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .step-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
+      opacity: 0;
+      transform: translateX(15px);
+      transition: all 0.5s var(--ease);
+    }
+
+    .step-box.built {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: #71717a;
+      margin-bottom: 8px;
+    }
+
+    .step-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .step-text {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* CTA */
+    .cta-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 44px 20px;
+      text-align: center;
+      margin: 40px 0 80px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s var(--ease);
+    }
+
+    .cta-box.built {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cta-box h3 {
+      font-size: clamp(22px, 3.2vw, 30px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .cta-box p {
+      color: var(--text-muted);
+      max-width: 460px;
+      margin: 0 auto 22px;
+      font-size: 14px;
+    }
+
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 24px 0;
+      text-align: center;
+      font-size: 11px;
+      color: #52525b;
+      font-family: var(--font-mono);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    footer.built { opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <!-- Шапка -->
+  <header id="mainHeader">
+    <div class="container nav-inner">
+      <a href="https://t.me/myoec" target="_blank" class="brand">
+        <span id="brandName"></span>
+        <span class="badge-dev">DEV</span>
+      </a>
+      <a href="https://t.me/myoec" target="_blank" class="btn-contact">Личка: @myoec</a>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Hero Секция (Сразу под шапкой) -->
+    <div class="hero">
+      <h1 class="hero-title">
+        <span id="heroTypeTarget"></span><span class="cursor" id="heroCursor"></span>
+      </h1>
+      <p class="hero-desc" id="heroDesc">
+        AI-first разработка без легаси: асинхронные Telegram-боты, минималистичные интерфейсы и надежная автоматизация на современном стеке.
+      </p>
+      <div class="hero-actions" id="heroActions">
+        <a href="https://t.me/myoec" target="_blank" class="btn-main">Обсудить проект в Telegram</a>
+        <a href="#services" class="btn-sec">Посмотреть направления</a>
+      </div>
+    </div>
+
+    <!-- Услуги -->
+    <section id="services">
+      <div class="sec-tag" id="tagServices">// НАПРАВЛЕНИЯ</div>
+      <h2 class="sec-title" id="titleServices">С какими задачами ко мне приходят.</h2>
+
+      <div class="services-grid">
+        <div class="card" id="card1">
+          <div class="card-num">01 / BOTS</div>
+          <h3 class="card-title">Telegram AI Боты</h3>
+          <p class="card-desc">Асинхронные боты с глубокой интеграцией LLM. От умных ассистентов до клубов с автооплатой.</p>
+          <ul class="card-list">
+            <li>Нейросети: Claude / GPT / локальные модели</li>
+            <li>Платежи: Stars, CryptoPay, ЮKassa</li>
+            <li>Базы данных: PostgreSQL / SQLite</li>
+          </ul>
+        </div>
+
+        <div class="card" id="card2">
+          <div class="card-num">02 / WEB</div>
+          <h3 class="card-title">Веб & Mini Apps</h3>
+          <p class="card-desc">Посадочные страницы и Telegram WebApps. Монохромная эстетика, liquid glass и оптимизация.</p>
+          <ul class="card-list">
+            <li>Telegram Mini Apps под ключ внутри приложения</li>
+            <li>Презентации продуктов, каналов и услуг</li>
+            <li>Адаптивность 120 FPS под смартфоны</li>
+          </ul>
+        </div>
+
+        <div class="card" id="card3">
+          <div class="card-num">03 / SCRIPTS</div>
+          <h3 class="card-title">Скрипты & Пайплайны</h3>
+          <p class="card-desc">Автоматизация рутины, забирающей часы времени. Парсеры, вебхуки и авто-обработка данных 24/7.</p>
+          <ul class="card-list">
+            <li>Мониторинг цен, маркетплейсов и каталогов</li>
+            <li>API-коннекторы между сервисами через вебхуки</li>
+            <li>Деплой на изолированные VPS/серверные среды</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Код -->
+    <section id="codeSection">
+      <div class="sec-tag" id="tagCode">// АРХИТЕКТУРА</div>
+      <h2 class="sec-title" id="titleCode">Чистый асинхронный стек.</h2>
+
+      <div class="code-window" id="codeWindow">
+        <div class="code-top">
+          <span>bot_engine.py</span>
+          <span>LIVE COMPILER</span>
+        </div>
+        <pre><code id="codeLiveStream"></code></pre>
+      </div>
+    </section>
+
+    <!-- Регламент -->
+    <section id="processSection">
+      <div class="sec-tag" id="tagProcess">// РЕГЛАМЕНТ</div>
+      <h2 class="sec-title" id="titleProcess">Как строится работа.</h2>
+
+      <div class="steps-grid">
+        <div class="step-box" id="step1">
+          <div class="step-num">01 / ТЗ</div>
+          <h4 class="step-title">Формулировка</h4>
+          <p class="step-text">Разбираем задачу: входные данные, внутренняя логика и итоговый результат.</p>
+        </div>
+        <div class="step-box" id="step2">
+          <div class="step-num">02 / ОЦЕНКА</div>
+          <h4 class="step-title">Сроки & Прайс</h4>
+          <p class="step-text">Четкие сроки и фиксированная стоимость. Никаких скрытых наценок.</p>
+        </div>
+        <div class="step-box" id="step3">
+          <div class="step-num">03 / СБОРКА</div>
+          <h4 class="step-title">Код & Тесты</h4>
+          <p class="step-text">Чистый асинхронный код, обработка ошибок и нагрузочные тесты.</p>
+        </div>
+        <div class="step-box" id="step4">
+          <div class="step-num">04 / РЕЛИЗ</div>
+          <h4 class="step-title">Деплой</h4>
+          <p class="step-text">Запуск на хостинге/VPS, настройка автоперезапуска и передача ключей.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-box" id="ctaBox">
+      <h3>Есть проект или идея?</h3>
+      <p>Опишите задачу в Telegram. Помогу составить ТЗ, подскажу лучший стек и сориентирую по срокам.</p>
+      <a href="https://t.me/myoec" target="_blank" class="btn-main">Написать @myoec</a>
+    </div>
+
+  </div>
+
+  <footer id="mainFooter">
+    <div class="container">
+      @MYOEC // RUNTIME REVEAL // 2026
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const mainHeader = document.getElementById("mainHeader");
+      const brandName = document.getElementById("brandName");
+      const heroTypeTarget = document.getElementById("heroTypeTarget");
+      const heroCursor = document.getElementById("heroCursor");
+      const heroDesc = document.getElementById("heroDesc");
+      const heroActions = document.getElementById("heroActions");
+
+      const tagServices = document.getElementById("tagServices");
+      const titleServices = document.getElementById("titleServices");
+      const card1 = document.getElementById("card1");
+      const card2 = document.getElementById("card2");
+      const card3 = document.getElementById("card3");
+
+      const tagCode = document.getElementById("tagCode");
+      const titleCode = document.getElementById("titleCode");
+      const codeWindow = document.getElementById("codeWindow");
+      const codeLiveStream = document.getElementById("codeLiveStream");
+
+      const tagProcess = document.getElementById("tagProcess");
+      const titleProcess = document.getElementById("titleProcess");
+      const step1 = document.getElementById("step1");
+      const step2 = document.getElementById("step2");
+      const step3 = document.getElementById("step3");
+      const step4 = document.getElementById("step4");
+
+      const ctaBox = document.getElementById("ctaBox");
+      const mainFooter = document.getElementById("mainFooter");
+
+      const titleText = "Сложные боты, сайты и скрипты без рутины.";
+      const codeSnippet = "import asyncio\nfrom aiogram import Router\nfrom core.ai import ClaudePipeline\n\nrouter = Router()\nagent = ClaudePipeline(model='claude-3-7-sonnet')\n\n@router.message()\nasync def handle(m):\n    res = await agent.run(m.text)\n    await m.answer(res.payload)";
+
+      function typeString(element, text, speed, callback) {
+        let i = 0;
+        const timer = setInterval(() => {
+          if (i < text.length) {
+            element.textContent += text[i];
+            i++;
+          } else {
+            clearInterval(timer);
+            if (callback) callback();
+          }
+        }, speed);
+      }
+
+      // 1. Плавный спуск шапки и печать ника
+      setTimeout(() => {
+        mainHeader.classList.add("built");
+        typeString(brandName, "@myoec", 40);
+      }, 200);
+
+      // 2. Печать главного оффера
+      setTimeout(() => {
+        typeString(heroTypeTarget, titleText, 25, () => {
+          heroCursor.style.display = "none";
+          heroDesc.classList.add("built");
+          heroActions.classList.add("built");
+        });
+      }, 800);
+
+      // 3. Выход карточек
+      setTimeout(() => {
+        tagServices.classList.add("built");
+        titleServices.classList.add("built");
+
+        setTimeout(() => card1.classList.add("built"), 180);
+        setTimeout(() => card2.classList.add("built"), 360);
+        setTimeout(() => card3.classList.add("built"), 540);
+      }, 2100);
+
+      // 4. Появление и компиляция кода
+      setTimeout(() => {
+        tagCode.classList.add("built");
+        titleCode.classList.add("built");
+        codeWindow.classList.add("built");
+
+        let cIndex = 0;
+        const codeTimer = setInterval(() => {
+          if (cIndex < codeSnippet.length) {
+            codeLiveStream.textContent += codeSnippet[cIndex];
+            cIndex += 2;
+          } else {
+            clearInterval(codeTimer);
+          }
+        }, 16);
+      }, 3100);
+
+      // 5. Появление шагов процесса и кнопки связи
+      setTimeout(() => {
+        tagProcess.classList.add("built");
+        titleProcess.classList.add("built");
+
+        setTimeout(() => step1.classList.add("built"), 120);
+        setTimeout(() => step2.classList.add("built"), 240);
+        setTimeout(() => step3.classList.add("built"), 360);
+        setTimeout(() => step4.classList.add("built"), 480);
+
+        setTimeout(() => {
+          ctaBox.classList.add("built");
+          mainFooter.classList.add("built");
+        }, 650);
+      }, 4300);
+    });
+  </script>
+</body>
+</html>
